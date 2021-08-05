@@ -1,0 +1,11 @@
+@import 'bootstrap-scss';
+
+html,
+body {
+  height: 100%;
+}
+
+.main {
+  margin-top: 20px;
+  height: calc(100% -20px);
+}
