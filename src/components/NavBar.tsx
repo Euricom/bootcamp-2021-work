@@ -25,10 +25,10 @@ const NavBar = (): JSX.Element => {
             Log In
           </Link>
         )}
-        <Button active={language === 'en'} type="button">
+        <Button active={language === 'en'} type="button" variant="primary">
           EN
         </Button>
-        <Button active={language === 'nl'} type="button">
+        <Button active={language === 'nl'} type="button" variant="primary">
           NL
         </Button>
       </div>

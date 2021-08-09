@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './modules/home/Home';
 import Login from './modules/login/Login';
 import NotFound from './pages/NotFound';
