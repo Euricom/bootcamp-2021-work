@@ -2,7 +2,6 @@ import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router';
-
 import App from './App';
 
 import Login, { LoginProps } from './modules/login/Login';
@@ -41,14 +40,14 @@ test('It renders login when visiting protected without being logged in', () => {
   history.push('/protected');
 
   render(
-    <IdentityContext.Provider value={{}}>
+    <IdentityContext.Provider value={{ username: 'hello' }}>
       <Router history={history}>
         <Protected />
       </Router>
     </IdentityContext.Provider>,
   );
 
-  screen.getByTestId('protected-mock');
+  screen.getByTestId('login-mock');
 });
 
 test('it renders login when path is /login', () => {
