@@ -2,10 +2,10 @@ import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router';
-
 import App from './App';
-
 import Login, { LoginProps } from './modules/login/Login';
+import LanguageContext from './contexts/LanguageContext';
+import NavBar from './components/NavBar';
 
 jest.mock('./modules/home/Home', () => () => <div data-testid="home-mock" />);
 jest.mock('./pages/NotFound', () => () => <div data-testid="not-found-mock" />);
@@ -59,7 +59,7 @@ test('it renders login when path is /login', () => {
 test('it renders the not found page when path is unknown', () => {
   const history = createBrowserHistory();
   history.push('/unknown');
- 
+
   render(
     <Router history={history}>
       <App />
@@ -116,5 +116,21 @@ describe('navbar', () => {
     expect(logoutLink).toHaveAttribute('href', '/logout');
 
     expect(within(nav).queryByRole('link', { name: 'Log In' })).not.toBeInTheDocument();
+  });
+});
+
+describe('App should:', () => {
+  test.only('render the correct translation', () => {
+    const history = createBrowserHistory();
+
+    render(
+      <LanguageContext.Provider value="nl">
+        <Router history={history}>
+          <App />
+        </Router>
+      </LanguageContext.Provider>,
+    );
+
+    screen.getByRole('heading', { name: /thuis/i });
   });
 });
