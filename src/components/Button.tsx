@@ -2,6 +2,7 @@
 import React from 'react';
 
 type ButtonProps = Pick<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled' | 'onClick' | 'className'> & {
+  active?: boolean;
   children: React.ReactNode;
   outlined?: boolean;
   size?: 'large' | 'small';
@@ -19,6 +20,7 @@ function getClassName(...names: (string | undefined)[]) {
 }
 
 const Button = ({
+  active,
   children,
   className,
   disabled,
@@ -30,7 +32,13 @@ const Button = ({
 }: ButtonProps): JSX.Element => (
   <button
     aria-disabled={disabled}
-    className={getClassName('btn', `btn-${outlined ? 'outline-' : ''}${variant}`, size && sizeMap[size], className)}
+    className={getClassName(
+      ' btn',
+      `${active ? 'active' : ''}`,
+      `btn-${outlined ? 'outline-' : ''}${variant}`,
+      size && sizeMap[size],
+      className,
+    )}
     disabled={disabled}
     onClick={onClick}
     type={type}

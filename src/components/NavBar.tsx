@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import IdentityContext from '../contexts/IdentityContext';
 import jsLogo from '../images/js-logo.png';
 import Button from './Button';
+import LanguageContext from '../contexts/LanguageContext';
 
 const NavBar = (): JSX.Element => {
   const identity = useContext(IdentityContext);
+  const language = useContext(LanguageContext);
 
   return (
     <nav className="navbar navbar-light bg-light">
@@ -23,8 +25,12 @@ const NavBar = (): JSX.Element => {
             Log In
           </Link>
         )}
-        <Button type="button">EN</Button>
-        <Button type="button">NL</Button>
+        <Button active={language === 'en'} type="button">
+          EN
+        </Button>
+        <Button active={language === 'nl'} type="button">
+          NL
+        </Button>
       </div>
     </nav>
   );
