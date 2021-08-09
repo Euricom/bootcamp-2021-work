@@ -90,7 +90,7 @@ describe('anonymous', () => {
   });
 });
 
-test('it redirects to / when authenticated', () => {
+test('it redirects to previous page when authenticated', () => {
   const history = createBrowserHistory();
   history.push('/not');
 

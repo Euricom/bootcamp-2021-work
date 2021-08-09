@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface Identity {
-  username: string;
+  username?: string;
 }
 
 const IdentityContext = React.createContext<Identity | null>(null);

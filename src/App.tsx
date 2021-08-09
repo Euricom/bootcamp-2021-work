@@ -5,6 +5,8 @@ import Login from './modules/login/Login';
 import NotFound from './pages/NotFound';
 import jsLogo from './images/js-logo.png';
 import IdentityContext, { Identity } from './contexts/IdentityContext';
+import RouteProtector from './modules/RouteProtector/RouteProtector';
+import Protected from './modules/protected/Protected';
 
 const NavBar = () => {
   const identity = useContext(IdentityContext);
@@ -26,6 +28,9 @@ const NavBar = () => {
             Log In
           </Link>
         )}
+        <Link className="nav-link" to="/protected">
+          protectedRoute
+        </Link>
       </div>
     </nav>
   );
@@ -33,7 +38,6 @@ const NavBar = () => {
 
 const App = (): JSX.Element => {
   const [currentIdentity, setCurrentIdentity] = useState<Identity | null>(null);
-
   return (
     <Router>
       <IdentityContext.Provider value={currentIdentity}>
@@ -41,7 +45,11 @@ const App = (): JSX.Element => {
         <div className="container-fluid">
           <Switch>
             <Route path="/" component={Home} exact />
-            <Route path="/login" render={() => <Login onLogin={setCurrentIdentity} />} />
+            <Route path="/login" render={({ location }) => <Login onLogin={setCurrentIdentity} />} />
+
+            <RouteProtector path="/protected">
+              <Protected />
+            </RouteProtector>
             <Route component={NotFound} />
           </Switch>
         </div>

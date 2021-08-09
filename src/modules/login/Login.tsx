@@ -1,5 +1,6 @@
+import path from 'path';
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, useLocation } from 'react-router';
 import Alert from '../../components/Alert';
 import IdentityContext, { Identity } from '../../contexts/IdentityContext';
 import LoginForm, { LoginFormProps } from './components/LoginForm';
@@ -8,8 +9,12 @@ import { authenticate } from './services/authentication';
 export interface LoginProps {
   onLogin: (identity: Identity) => void;
 }
+interface State {
+  path: string;
+}
 
 const Login = ({ onLogin }: LoginProps): JSX.Element => {
+  const location = useLocation<State>();
   const identity = React.useContext(IdentityContext);
   const [submitting, setSubmitting] = React.useState(false);
   const [authFailed, setAuthFailed] = React.useState(false);
@@ -19,14 +24,18 @@ const Login = ({ onLogin }: LoginProps): JSX.Element => {
 
     const authenticated = await authenticate(username, password);
 
-    if (authenticated) onLogin({ username });
-    else {
+    if (authenticated) {
+      onLogin({ username });
+    } else {
       setAuthFailed(true);
       setSubmitting(false);
     }
   };
 
-  if (identity) return <Redirect to="/" />;
+  if (identity)
+    if (location.state?.path) {
+      return <Redirect to={`${location.state.path}`} />;
+    } else return <Redirect to="/" />;
 
   return (
     <div className="container mt-5">

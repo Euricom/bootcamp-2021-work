@@ -2,11 +2,12 @@ import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
 import { Router } from 'react-router';
-import App from './App';
+import userEvent from '@testing-library/user-event';
+import { mocked } from 'ts-jest/utils';
 
+import App from './App';
 import Login, { LoginProps } from './modules/login/Login';
 import IdentityContext from './contexts/IdentityContext';
-import Protected from './modules/protected/Protected';
 
 jest.mock('./modules/home/Home', () => () => <div data-testid="home-mock" />);
 jest.mock('./pages/NotFound', () => () => <div data-testid="not-found-mock" />);
@@ -33,21 +34,6 @@ test('it renders home when path is /', () => {
   screen.getByTestId('home-mock');
 
   expect(screen.queryByTestId('not-found-mock')).not.toBeInTheDocument();
-});
-
-test('It renders login when visiting protected without being logged in', () => {
-  const history = createBrowserHistory();
-  history.push('/protected');
-
-  render(
-    <IdentityContext.Provider value={{ username: 'hello' }}>
-      <Router history={history}>
-        <Protected />
-      </Router>
-    </IdentityContext.Provider>,
-  );
-
-  screen.getByTestId('login-mock');
 });
 
 test('it renders login when path is /login', () => {
@@ -133,4 +119,19 @@ describe('navbar', () => {
 
     expect(within(nav).queryByRole('link', { name: 'Log In' })).not.toBeInTheDocument();
   });
+});
+
+test('It renders login when visiting protected without being logged in', () => {
+  const history = createBrowserHistory();
+  history.push('/protected');
+
+  render(
+    <IdentityContext.Provider value={{}}>
+      <Router history={history}>
+        <App />
+      </Router>
+    </IdentityContext.Provider>,
+  );
+
+  screen.getByTestId('login-mock');
 });
