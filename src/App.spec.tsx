@@ -5,7 +5,6 @@ import { Router } from 'react-router';
 import App from './App';
 import Login, { LoginProps } from './modules/login/Login';
 import LanguageContext from './contexts/LanguageContext';
-import NavBar from './components/NavBar';
 
 jest.mock('./modules/home/Home', () => () => <div data-testid="home-mock" />);
 jest.mock('./pages/NotFound', () => () => <div data-testid="not-found-mock" />);
@@ -120,7 +119,7 @@ describe('navbar', () => {
 });
 
 describe('App should:', () => {
-  test.only('render the correct translation', () => {
+  test('render the correct translation', () => {
     const history = createBrowserHistory();
 
     render(
