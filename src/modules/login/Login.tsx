@@ -1,4 +1,3 @@
-import path from 'path';
 import React from 'react';
 import { Redirect, useLocation } from 'react-router';
 import Alert from '../../components/Alert';
@@ -33,7 +32,7 @@ const Login = ({ onLogin }: LoginProps): JSX.Element => {
   };
 
   if (identity)
-    if (location.state?.path) {
+    if (location.state?.path && location.state !== undefined) {
       return <Redirect to={`${location.state.path}`} />;
     } else return <Redirect to="/" />;
 

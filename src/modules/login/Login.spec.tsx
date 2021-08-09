@@ -1,15 +1,18 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { createBrowserHistory } from 'history';
-import { Router } from 'react-router';
 import userEvent from '@testing-library/user-event';
 import { mocked } from 'ts-jest/utils';
+import { BrowserRouter } from 'react-router-dom';
 
 import Login from './Login';
-import IdentityContext from '../../contexts/IdentityContext';
 import { authenticate } from './services/authentication';
 
 jest.mock('./services/authentication');
+
+afterEach(() => {
+  window.history.replaceState(null, '', '/');
+});
 
 function getFormElements() {
   return {
@@ -21,7 +24,11 @@ function getFormElements() {
 
 describe('anonymous', () => {
   test('it renders the login form', () => {
-    render(<Login onLogin={() => {}} />);
+    render(
+      <BrowserRouter>
+        <Login onLogin={() => {}} />
+      </BrowserRouter>,
+    );
 
     screen.getByRole('heading', { name: 'Log in to Bootcamp' });
     const { usernameInput, passwordInput, loginButton } = getFormElements();
@@ -43,7 +50,11 @@ describe('anonymous', () => {
     const givenUser = 'user';
     const givenPass = 'pass';
 
-    render(<Login onLogin={onLogin} />);
+    render(
+      <BrowserRouter>
+        <Login onLogin={onLogin} />
+      </BrowserRouter>,
+    );
 
     const { usernameInput, passwordInput, loginButton } = getFormElements();
 
@@ -64,7 +75,11 @@ describe('anonymous', () => {
 
   test('it fails to authenticate user', async () => {
     const onLogin = jest.fn();
-    render(<Login onLogin={onLogin} />);
+    render(
+      <BrowserRouter>
+        <Login onLogin={onLogin} />
+      </BrowserRouter>,
+    );
 
     const { usernameInput, passwordInput, loginButton } = getFormElements();
 
@@ -90,17 +105,65 @@ describe('anonymous', () => {
   });
 });
 
-test('it redirects to previous page when authenticated', () => {
+test('it redirects to previous page when authenticated', async () => {
+  const onLogin = jest.fn();
+  const givenUser = 'user';
+  const givenPass = 'pass';
+
   const history = createBrowserHistory();
-  history.push('/not');
+  history.push('/protected');
 
   render(
-    <IdentityContext.Provider value={{ username: 'johndo' }}>
-      <Router history={history}>
-        <Login onLogin={jest.fn()} />
-      </Router>
-    </IdentityContext.Provider>,
+    <BrowserRouter>
+      <Login onLogin={onLogin} />
+    </BrowserRouter>,
   );
 
-  expect(history).toHaveProperty('location', expect.objectContaining({ pathname: '/' }));
+  const { usernameInput, passwordInput, loginButton } = getFormElements();
+
+  userEvent.type(usernameInput, givenUser);
+  userEvent.type(passwordInput, givenPass);
+
+  mocked(authenticate).mockResolvedValueOnce(true);
+
+  userEvent.click(loginButton);
+
+  expect(loginButton).toBeDisabled();
+  expect(authenticate).toHaveBeenCalledWith(givenUser, givenPass);
+
+  await waitFor(() => {
+    expect(onLogin).toHaveBeenCalledWith({ username: givenUser });
+    expect(history).toHaveProperty('location', expect.objectContaining({ pathname: '/protected' }));
+  });
+});
+test('it redirects to home page when authenticated and no redirect', async () => {
+  const onLogin = jest.fn();
+  const givenUser = 'user';
+  const givenPass = 'pass';
+
+  const history = createBrowserHistory();
+  history.push('/');
+
+  render(
+    <BrowserRouter>
+      <Login onLogin={onLogin} />
+    </BrowserRouter>,
+  );
+
+  const { usernameInput, passwordInput, loginButton } = getFormElements();
+
+  userEvent.type(usernameInput, givenUser);
+  userEvent.type(passwordInput, givenPass);
+
+  mocked(authenticate).mockResolvedValueOnce(true);
+
+  userEvent.click(loginButton);
+
+  expect(loginButton).toBeDisabled();
+  expect(authenticate).toHaveBeenCalledWith(givenUser, givenPass);
+
+  await waitFor(() => {
+    expect(onLogin).toHaveBeenCalledWith({ username: givenUser });
+    expect(history).toHaveProperty('location', expect.objectContaining({ pathname: '/' }));
+  });
 });
