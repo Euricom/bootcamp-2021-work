@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import IdentityContext from '../contexts/IdentityContext';
 import jsLogo from '../images/js-logo.png';
 import Button from './Button';
-import LanguageContext from '../contexts/LanguageContext';
+import LanguageContext, { UserLanguage } from '../contexts/LanguageContext';
 
-const NavBar = (): JSX.Element => {
+interface NavBarProps {
+  onLanguageChange: (language: UserLanguage) => void;
+}
+
+const NavBar = ({ onLanguageChange }: NavBarProps): JSX.Element => {
   const identity = useContext(IdentityContext);
   const language = useContext(LanguageContext);
 
@@ -25,10 +29,10 @@ const NavBar = (): JSX.Element => {
             Log In
           </Link>
         )}
-        <Button active={language === 'en'} type="button" variant="primary">
+        <Button active={language === 'en'} type="button" variant="primary" onClick={() => onLanguageChange('en')}>
           EN
         </Button>
-        <Button active={language === 'nl'} type="button" variant="primary">
+        <Button active={language === 'nl'} type="button" variant="primary" onClick={() => onLanguageChange('nl')}>
           NL
         </Button>
       </div>

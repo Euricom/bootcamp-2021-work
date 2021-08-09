@@ -5,16 +5,17 @@ import Login from './modules/login/Login';
 import NotFound from './pages/NotFound';
 import IdentityContext, { Identity } from './contexts/IdentityContext';
 import NavBar from './components/NavBar';
-import LanguageContext from './contexts/LanguageContext';
+import LanguageContext, { UserLanguage } from './contexts/LanguageContext';
 
 const App = (): JSX.Element => {
   const [currentIdentity, setCurrentIdentity] = useState<Identity | null>(null);
+  const [currentLanguage, setCurrentLanguage] = useState<UserLanguage>('en');
 
   return (
     <Router>
-      <LanguageContext.Provider value="en">
+      <LanguageContext.Provider value={currentLanguage}>
         <IdentityContext.Provider value={currentIdentity}>
-          <NavBar />
+          <NavBar onLanguageChange={setCurrentLanguage} />
           <div className="container-fluid">
             <Switch>
               <Route path="/" component={Home} exact />

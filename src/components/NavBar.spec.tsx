@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { Router } from 'react-router';
 import NavBar from './NavBar';
 import LanguageContext from '../contexts/LanguageContext';
+import userEvent from '@testing-library/user-event';
 
 describe('Navbar should:', () => {
   test('renders language buttons', () => {
@@ -11,7 +12,7 @@ describe('Navbar should:', () => {
 
     render(
       <Router history={history}>
-        <NavBar />
+        <NavBar onLanguageChange={jest.fn()} />
       </Router>,
     );
 
@@ -28,7 +29,7 @@ describe('Navbar should:', () => {
     render(
       <LanguageContext.Provider value="nl">
         <Router history={history}>
-          <NavBar />
+          <NavBar onLanguageChange={jest.fn()} />
         </Router>
       </LanguageContext.Provider>,
     );
@@ -38,5 +39,23 @@ describe('Navbar should:', () => {
 
     expect(buttonElementNl).toHaveClass('active');
     expect(buttonElementEn).not.toHaveClass('active');
+  });
+
+  test('should switch between languages', () => {
+    const onLanguageChange = jest.fn();
+    const history = createBrowserHistory();
+
+    render(
+      <LanguageContext.Provider value="nl">
+        <Router history={history}>
+          <NavBar onLanguageChange={onLanguageChange} />
+        </Router>
+      </LanguageContext.Provider>,
+    );
+
+    const buttonElementEn = screen.getByRole('button', { name: /en/i });
+    userEvent.click(buttonElementEn);
+
+    expect(onLanguageChange).toHaveBeenCalledWith('en');
   });
 });
