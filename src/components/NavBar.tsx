@@ -2,13 +2,9 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import IdentityContext from '../contexts/IdentityContext';
 import jsLogo from '../images/js-logo.png';
+import Button from './Button';
 
-
-
-
-
-
-const NavBar = () => {
+const NavBar = (): JSX.Element => {
   const identity = useContext(IdentityContext);
 
   return (
@@ -27,11 +23,11 @@ const NavBar = () => {
             Log In
           </Link>
         )}
-         <button type='button'>EN</button>
-         <button type='button'>NL</button>
+        <Button type="button">EN</Button>
+        <Button type="button">NL</Button>
       </div>
     </nav>
   );
 };
 
-export default  NavBar
+export default NavBar;

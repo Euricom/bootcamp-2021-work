@@ -10,8 +10,6 @@ describe('Navbar should:', () => {
 
     render( <Router history={history}><NavBar/></Router>)
 
-
-
     screen.getByRole('button', {name: /nl/i})
     screen.getByRole('button', {name: /en/i})
   });
