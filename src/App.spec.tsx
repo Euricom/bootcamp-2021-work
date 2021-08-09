@@ -6,6 +6,8 @@ import { Router } from 'react-router';
 import App from './App';
 
 import Login, { LoginProps } from './modules/login/Login';
+import IdentityContext from './contexts/IdentityContext';
+import Protected from './modules/protected/Protected';
 
 jest.mock('./modules/home/Home', () => () => <div data-testid="home-mock" />);
 jest.mock('./pages/NotFound', () => () => <div data-testid="not-found-mock" />);
@@ -34,6 +36,21 @@ test('it renders home when path is /', () => {
   expect(screen.queryByTestId('not-found-mock')).not.toBeInTheDocument();
 });
 
+test('It renders login when visiting protected without being logged in', () => {
+  const history = createBrowserHistory();
+  history.push('/protected');
+
+  render(
+    <IdentityContext.Provider value={{}}>
+      <Router history={history}>
+        <Protected />
+      </Router>
+    </IdentityContext.Provider>,
+  );
+
+  screen.getByTestId('protected-mock');
+});
+
 test('it renders login when path is /login', () => {
   const history = createBrowserHistory();
   history.push('/login');
@@ -59,7 +76,7 @@ test('it renders login when path is /login', () => {
 test('it renders the not found page when path is unknown', () => {
   const history = createBrowserHistory();
   history.push('/unknown');
- 
+
   render(
     <Router history={history}>
       <App />
